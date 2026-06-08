@@ -3,6 +3,7 @@ import { render, type CollectionEntry } from 'astro:content'
 
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import PostLayout from '@/layouts/BlogPost.astro'
+import { getCourseUrl, isCourseNote, isRegularBlogPost } from '@/utils/course-notes'
 
 export const prerender = true
 
@@ -10,7 +11,10 @@ export async function getStaticPaths() {
   const posts = sortMDByDate(await getBlogCollection())
   return posts.map((post) => ({
     params: { id: post.id },
-    props: { post, posts }
+    props: {
+      post,
+      posts: posts.filter(isCourseNote(post) ? isCourseNote : isRegularBlogPost)
+    }
   }))
 }
 
@@ -21,8 +25,9 @@ type Props = {
 
 const { post, posts } = Astro.props
 const { Content, headings, remarkPluginFrontmatter } = await render(post)
+const back = isCourseNote(post) ? getCourseUrl(post) : '/blog'
 ---
 
-<PostLayout {post} {posts} {headings} {remarkPluginFrontmatter}>
+<PostLayout {post} {posts} {headings} {remarkPluginFrontmatter} {back}>
   <Content />
 </PostLayout>

@@ -7,11 +7,12 @@ import { getBlogCollection, getUniqueTags, sortMDByDate } from 'astro-pure/serve
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import config from '@/site-config'
+import { isRegularBlogPost } from '@/utils/course-notes'
 
 export const prerender = true
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const collections = sortMDByDate(await getBlogCollection())
+  const collections = sortMDByDate(await getBlogCollection()).filter(isRegularBlogPost)
   const uniqueTags = getUniqueTags(collections)
   const collectionsCount = collections.length
   return paginate(collections, {
@@ -66,9 +67,14 @@ const paginationProps = {
               <span class='text-muted-foreground'>
                 Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} posts
               </span>
-              <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
-                View all posts by years →
-              </a>
+              <div class='flex gap-x-4'>
+                <a aria-label='View course notes' href='/notes' data-astro-prefetch>
+                  Course notes →
+                </a>
+                <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
+                  View all posts by years →
+                </a>
+              </div>
             </div>
             {/* posts */}
             <ul class='flex flex-col gap-y-4 text-start'>

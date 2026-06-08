@@ -10,10 +10,11 @@ import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import avatar from '@/assets/github.jpg'
 import config from '@/site-config'
+import { isRegularBlogPost } from '@/utils/course-notes'
 
 const MAX_POSTS = 10
 const allPosts = await getBlogCollection()
-const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
+const allPostsByDate = sortMDByDate(allPosts).filter(isRegularBlogPost).slice(0, MAX_POSTS)
 ---
 
 <PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
@@ -111,6 +112,16 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
           </Section>
         )
       }
+
+      <Section title='Course Notes'>
+        <p class='text-muted-foreground'>自动化、机器人与计算机相关课程笔记，按课程单独整理。</p>
+        <Button
+          title='View notes'
+          class='glass-button w-fit self-end'
+          href='/notes'
+          variant='ahead'
+        />
+      </Section>
 
       {
         /* <Section title='Experience'>
