@@ -11,6 +11,7 @@ import { visit } from 'unist-util-visit'
 import config from 'virtual:config'
 
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import { isRegularBlogPost } from '@/utils/course-notes'
 
 // Get dynamic import of images as a map collection
 const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
@@ -70,7 +71,9 @@ const renderContent = async (post: CollectionEntry<'blog'>, site: URL) => {
 }
 
 const GET = async (context: AstroGlobal) => {
-  const allPostsByDate = sortMDByDate(await getBlogCollection()) as CollectionEntry<'blog'>[]
+  const allPostsByDate = sortMDByDate(
+    (await getBlogCollection()).filter(isRegularBlogPost)
+  ) as CollectionEntry<'blog'>[]
   const siteUrl = context.site ?? new URL(import.meta.env.SITE)
 
   return rss({

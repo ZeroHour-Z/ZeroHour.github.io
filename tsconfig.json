@@ -20,6 +20,7 @@
       "@/layouts/*": ["src/layouts/*"],
       "@/plugins/*": ["src/plugins/*"],
       "@/pages/*": ["src/pages/*"],
+      "@/utils/*": ["src/utils/*"],
       "@/site-config": ["src/site.config.ts"]
     }
   },
